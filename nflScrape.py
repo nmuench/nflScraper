@@ -6,12 +6,15 @@ import re
 base_page_url = "https://www.pro-football-reference.com"
 # soup = BeautifulSoup(html_doc, 'html.parser')
 max_week = 1
+start_week = 1
 start_year = 2000
 last_year = 2000
 
 curr_year = start_year
+#Cycles over every year within the given window and pulls down the play by play
+#of every game played in that year in the desired weeks.
 while(curr_year <= last_year):
-    curr_week = 1
+    curr_week = start_week
     while(curr_week <= max_week):
         week_url = base_page_url + "/years/" + str(curr_year) + "/week_" + str(curr_week) + ".htm"
         # print(week_url)
@@ -21,6 +24,8 @@ while(curr_year <= last_year):
         week_parser = BeautifulSoup(weekPage.text,"html.parser")
         print("Done parsing week")
         gameList = week_parser.find_all("td", class_="right gamelink")
+        #Cycles over every game that happened in a given week and gets the
+        #play by play information for that game along with other desired information.
         for game in gameList:
             gameLink = game.find("a")
             print("getting game")
@@ -42,7 +47,7 @@ while(curr_year <= last_year):
             for play in game_play_description:
                 if(re.search("pass", play.text) and not re.search("[Nn]o play", play.text)):
                     num_passes += 1
-            
+
             print(num_passes)
 
         curr_week = curr_week + 1
